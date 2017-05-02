@@ -23,11 +23,6 @@ func (u User) String() string {
   return string(ju)
 }
 
-//func (u User) User(s string) User {
-//  json.Unmarshal([]byte(s), u)
-//  return u
-//}
-
 // Users is not required by pop and may be deleted
 type Users []User
 

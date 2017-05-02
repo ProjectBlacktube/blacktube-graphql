@@ -4,9 +4,8 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "go run graphql.go",
-    "migrate": "go utils/migrate.go",
-    "build-migration": "go build -tags 'postgres' -o utils/migrate github.com/mattes/migrate/cli"
+    "start": "go run main.go",
+    "build-migration": "go install github.com/markbates/pop/soda"
   },
   "repository": {
     "type": "git",

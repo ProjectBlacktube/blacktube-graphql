@@ -3,36 +3,33 @@ package graphql
 import (
   "log"
 
-  "github.com/icalF/blacktube-graphql/models"
   "github.com/markbates/pop"
+  "github.com/icalF/blacktube-graphql/models"
 )
 
-type Users models.Users
-type User models.User
-
-func allUsers() (Users, error) {
+func allUsers() (models.Users, error) {
   db, err := pop.Connect("development")
   if err != nil {
     log.Panic(err)
   }
 
-  users := Users{}
+  users := models.Users{}
   query := pop.Q(db)
   err = query.All(&users)
   if err != nil {
     log.Panic(err)
   }
 
-	return users, err
+  return users, err
 }
 
-func findUser(id int) (User, error) {
+func findUser(id int) (models.User, error) {
   db, err := pop.Connect("development")
   if err != nil {
     log.Panic(err)
   }
 
-  user := User{}
+  user := models.User{}
   err = db.Find(&user, id)
   if err != nil {
     log.Panic(err)
@@ -41,7 +38,7 @@ func findUser(id int) (User, error) {
   return user, err
 }
 
-func newUser(user User) (User, error) {
+func newUser(user models.User) (models.User, error) {
   db, err := pop.Connect("development")
   if err != nil {
     log.Panic(err)
@@ -55,7 +52,7 @@ func newUser(user User) (User, error) {
   return user, err
 }
 
-func updateUser(user User) (User, error) {
+func updateUser(user models.User) (models.User, error) {
   db, err := pop.Connect("development")
   if err != nil {
     log.Panic(err)
@@ -68,4 +65,3 @@ func updateUser(user User) (User, error) {
 
   return user, err
 }
-

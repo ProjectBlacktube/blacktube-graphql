@@ -3,7 +3,6 @@ path = github.com/icalF/blacktube-graphql
 
 [deps]
 github.com/graphql-go/graphql = branch:master
-github.com/joho/godotenv = branch:master
 github.com/sogko/graphql-go-handler = branch:master
-github.com/markbates/pop = 
+github.com/markbates/pop = branch:master
 
