@@ -3,19 +3,19 @@ package graphql
 import (
   "log"
 
-  "github.com/markbates/pop"
-  "github.com/icalF/blacktube-graphql/models"
+  "github.com/gobuffalo/pop"
+  "github.com/koneko096/blacktube-graphql/models"
 )
 
-func allUsers() (models.Users, error) {
-  db, err := pop.Connect("development")
-  if err != nil {
-    log.Panic(err)
-  }
+type UserQueryManager struct {
+  db *pop.Connection
+}
 
+func (manager *UserQueryManager) allUsers() (models.Users, error) {
   users := models.Users{}
-  query := pop.Q(db)
-  err = query.All(&users)
+  query := pop.Q(manager.db)
+
+  err := query.All(&users)
   if err != nil {
     log.Panic(err)
   }
@@ -23,14 +23,9 @@ func allUsers() (models.Users, error) {
   return users, err
 }
 
-func findUser(id int) (models.User, error) {
-  db, err := pop.Connect("development")
-  if err != nil {
-    log.Panic(err)
-  }
-
+func (manager *UserQueryManager) findUser(id int) (models.User, error) {
   user := models.User{}
-  err = db.Find(&user, id)
+  err := manager.db.Find(&user, id)
   if err != nil {
     log.Panic(err)
   }
@@ -38,13 +33,8 @@ func findUser(id int) (models.User, error) {
   return user, err
 }
 
-func newUser(user models.User) (models.User, error) {
-  db, err := pop.Connect("development")
-  if err != nil {
-    log.Panic(err)
-  }
-
-  err = db.Save(&user)
+func (manager *UserQueryManager) newUser(user models.User) (models.User, error) {
+  err := manager.db.Save(&user)
   if err != nil {
     log.Panic(err)
   }
@@ -52,13 +42,8 @@ func newUser(user models.User) (models.User, error) {
   return user, err
 }
 
-func updateUser(user models.User) (models.User, error) {
-  db, err := pop.Connect("development")
-  if err != nil {
-    log.Panic(err)
-  }
-
-  err = db.Update(&user)
+func (manager *UserQueryManager) updateUser(user models.User) (models.User, error) {
+  err := manager.db.Update(&user)
   if err != nil {
     log.Panic(err)
   }

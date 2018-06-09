@@ -7,7 +7,10 @@ import (
 
   "github.com/graphql-go/graphql"
   "github.com/graphql-go/graphql/gqlerrors"
-  "github.com/icalF/blacktube-graphql/models"
+  "github.com/koneko096/blacktube-graphql/models"
+  "github.com/gobuffalo/pop"
+  "log"
+  "os"
 )
 
 var userType *graphql.Object
@@ -18,6 +21,24 @@ var mutationType *graphql.Object
 var Schema graphql.Schema
 
 func init() {
+  env := os.Getenv("APP_ENV")
+  if len(env) == 0 {
+    env = "development"
+  }
+
+  db, err := pop.Connect(env)
+  if err != nil {
+    log.Panic(err)
+  }
+
+  userManager := &UserQueryManager{
+    db,
+  }
+  videoManager := &VideoQueryManager{
+    db,
+    userManager,
+  }
+
   userType = graphql.NewObject(graphql.ObjectConfig{
     Name: "User",
     Fields: graphql.Fields{
@@ -71,9 +92,9 @@ func init() {
         Resolve: func(p graphql.ResolveParams) (interface{}, error) {
           idQuery, isOK := p.Args["id"].(int)
           if isOK {
-            return findUser(idQuery)
+            return userManager.findUser(idQuery)
           }
-          return allUsers()
+          return userManager.allUsers()
         },
       },
 
@@ -88,9 +109,9 @@ func init() {
         Resolve: func(p graphql.ResolveParams) (interface{}, error) {
           idQuery, isOK := p.Args["id"].(int)
           if isOK {
-            return findVideo(idQuery)
+            return videoManager.findVideo(idQuery)
           }
-          return allVideos()
+          return videoManager.allVideos()
         },
       },
     },
@@ -125,7 +146,7 @@ func init() {
             Name:     name,
             Password: pass,
           }
-          return newUser(user)
+          return userManager.newUser(user)
         },
       },
 
@@ -152,7 +173,7 @@ func init() {
           name, _ := p.Args["name"].(string)
           pass, _ := p.Args["password"].(string)
 
-          user, _ := findUser(idQuery)
+          user, _ := userManager.findUser(idQuery)
           if !isOk {
             return nil, gqlerrors.Error{}
           }
@@ -160,7 +181,7 @@ func init() {
           user.Name = name
           user.Password = pass
 
-          return updateUser(user)
+          return userManager.updateUser(user)
         },
       },
 
@@ -212,7 +233,7 @@ func init() {
             Owner:       owner,
           }
 
-          return newVideo(video)
+          return videoManager.newVideo(video)
         },
       },
 
@@ -239,8 +260,8 @@ func init() {
           desc, _ := p.Args["description"].(string)
           dur, _ := p.Args["duration"].(int)
 
-          v, _ := findVideo(idQuery)
-          video, _ := fromNested(v)
+          v, _ := videoManager.findVideo(idQuery)
+          video, _ := videoManager.fromNested(v)
           if !isOk {
             return nil, gqlerrors.Error{}
           }
@@ -249,7 +270,7 @@ func init() {
           video.Duration = dur
           video.Description = desc
 
-          return updateVideo(video)
+          return videoManager.updateVideo(video)
         },
       },
     },

@@ -7,7 +7,7 @@ import (
 
   "fmt"
 
-  "github.com/icalF/blacktube-graphql/graphql"
+  "github.com/koneko096/blacktube-graphql/graphql"
   gqlhandler "github.com/sogko/graphql-go-handler"
 )
 
