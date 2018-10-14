@@ -1,0 +1,36 @@
+type User {
+	id: ID!
+	name: String!
+	password: String!
+}
+
+type Video {
+	id: ID!
+	duration: Int!
+	key: String!
+	title: String!
+	description: String!
+	owner: User!
+}
+
+type Query {
+  users: [User!]!
+  videos: [Video!]!
+}
+
+input NewUser {
+  name: String!
+  password: String!
+}
+
+input NewVideo {
+  title: String!
+  description: String!
+  duration: Int!
+  ownerId: String!
+}
+
+type Mutation {
+  createUser(input: NewUser!): User!
+  createVideo(input: NewVideo!): Video!
+}

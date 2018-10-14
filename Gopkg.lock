@@ -2,6 +2,23 @@
 
 
 [[projects]]
+  name = "github.com/99designs/gqlgen"
+  packages = [
+    "complexity",
+    "graphql",
+    "graphql/introspection",
+    "handler"
+  ]
+  revision = "6f486bde038887adf67c3e3766624ef111ea95cf"
+  version = "v0.6.0"
+
+[[projects]]
+  name = "github.com/agnivade/levenshtein"
+  packages = ["."]
+  revision = "834b435c3df04fba060c8d74a40d849ab2c4a090"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/cockroachdb/cockroach-go"
   packages = ["crdb"]
@@ -66,22 +83,19 @@
   version = "v2.0.0"
 
 [[projects]]
-  name = "github.com/graphql-go/graphql"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
+  name = "github.com/hashicorp/golang-lru"
   packages = [
     ".",
-    "gqlerrors",
-    "language/ast",
-    "language/kinds",
-    "language/lexer",
-    "language/location",
-    "language/parser",
-    "language/printer",
-    "language/source",
-    "language/typeInfo",
-    "language/visitor"
+    "simplelru"
   ]
-  revision = "1e23489041ba90a66f317fe0deccb236a2fff3cb"
-  version = "v0.7.5"
+  revision = "20f1fb78b0740ba8c3cb143a61e86ba5c8669768"
+  version = "v0.5.0"
 
 [[projects]]
   branch = "master"
@@ -165,10 +179,18 @@
   revision = "a683aaf2d516deecd70cad0c72e3ca773ecfcef0"
 
 [[projects]]
-  name = "github.com/sogko/graphql-go-handler"
-  packages = ["."]
-  revision = "f0393b2c10daeebea900292b8e092e73475399d9"
-  version = "v0.2.1"
+  branch = "master"
+  name = "github.com/vektah/gqlparser"
+  packages = [
+    ".",
+    "ast",
+    "gqlerror",
+    "lexer",
+    "parser",
+    "validator",
+    "validator/rules"
+  ]
+  revision = "f119686bf1d4d1a68c7ed6afe35f183625443c41"
 
 [[projects]]
   branch = "master"
@@ -203,6 +225,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ad4de635c52a20694d1784a82165a7fe56a268e65a11c5d8954077410ad6fc85"
+  inputs-digest = "21c8ac2330e49644e780cd7f6ca83da6c478c0923757ce47261c88d53c8d40cb"
   solver-name = "gps-cdcl"
   solver-version = 1

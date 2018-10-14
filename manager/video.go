@@ -1,8 +1,10 @@
-package graphql
+package manager
 
 import (
+	"crypto/sha1"
+	"fmt"
 	"log"
-	"time"
+	"strconv"
 
 	"github.com/gobuffalo/pop"
 	"github.com/koneko096/blacktube-graphql/models"
@@ -12,20 +14,9 @@ type VideoQueryManager struct {
 	Db          *pop.Connection
 	UserManager *UserQueryManager
 }
+type VideosNested []models.VideoNested
 
-type VideoNested struct {
-	ID          int         `json:"id" db:"id"`
-	CreatedAt   time.Time   `json:"created_at" db:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at" db:"updated_at"`
-	Duration    int         `json:"duration" db:"duration"`
-	Key         string      `json:"key" db:"key"`
-	Title       string      `json:"title" db:"title"`
-	Description string      `json:"description" db:"description"`
-	Owner       models.User `json:"owner"`
-}
-type VideosNested []VideoNested
-
-func (manager *VideoQueryManager) allVideos() (VideosNested, error) {
+func (manager *VideoQueryManager) AllVideos() (VideosNested, error) {
 	videos := models.Videos{}
 	query := pop.Q(manager.Db)
 
@@ -41,7 +32,7 @@ func (manager *VideoQueryManager) allVideos() (VideosNested, error) {
 	return videosNested, err
 }
 
-func (manager *VideoQueryManager) findVideo(id int) (VideoNested, error) {
+func (manager *VideoQueryManager) FindVideo(id int) (models.VideoNested, error) {
 	video := models.Video{}
 	err := manager.Db.Find(&video, id)
 	if err != nil {
@@ -51,16 +42,31 @@ func (manager *VideoQueryManager) findVideo(id int) (VideoNested, error) {
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) newVideo(video models.Video) (VideoNested, error) {
-	err := manager.Db.Save(&video)
+func (manager *VideoQueryManager) NewVideo(newVideo models.NewVideo) (models.VideoNested, error) {
+	oi, err := strconv.Atoi(newVideo.OwnerID)
 	if err != nil {
 		log.Panic(err)
+		return models.VideoNested{}, err
+	}
+
+	video := models.Video{
+		Title:       newVideo.Title,
+		Description: newVideo.Description,
+		Duration:    newVideo.Duration,
+		Key:         fmt.Sprintf("%x", sha1.Sum([]byte(newVideo.Title))),
+		Owner:       oi,
+	}
+
+	err = manager.Db.Save(&video)
+	if err != nil {
+		log.Panic(err)
+		return models.VideoNested{}, err
 	}
 
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) updateVideo(video models.Video) (VideoNested, error) {
+func (manager *VideoQueryManager) UpdateVideo(video models.Video) (models.VideoNested, error) {
 	err := manager.Db.Update(&video)
 	if err != nil {
 		log.Panic(err)
@@ -69,10 +75,10 @@ func (manager *VideoQueryManager) updateVideo(video models.Video) (VideoNested, 
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) toNested(video models.Video) (VideoNested, error) {
-	owner, err := manager.UserManager.findUser(video.Owner)
+func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNested, error) {
+	owner, err := manager.UserManager.FindUser(video.Owner)
 
-	return VideoNested{
+	return models.VideoNested{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,
 		UpdatedAt:   video.UpdatedAt,
@@ -84,7 +90,7 @@ func (manager *VideoQueryManager) toNested(video models.Video) (VideoNested, err
 	}, err
 }
 
-func (manager *VideoQueryManager) fromNested(video VideoNested) (models.Video, error) {
+func (manager *VideoQueryManager) fromNested(video models.VideoNested) (models.Video, error) {
 	return models.Video{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,

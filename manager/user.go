@@ -1,4 +1,4 @@
-package graphql
+package manager
 
 import (
 	"log"
@@ -11,7 +11,7 @@ type UserQueryManager struct {
 	Db *pop.Connection
 }
 
-func (manager *UserQueryManager) allUsers() (models.Users, error) {
+func (manager *UserQueryManager) AllUsers() (models.Users, error) {
 	users := models.Users{}
 	query := pop.Q(manager.Db)
 
@@ -23,7 +23,7 @@ func (manager *UserQueryManager) allUsers() (models.Users, error) {
 	return users, err
 }
 
-func (manager *UserQueryManager) findUser(id int) (models.User, error) {
+func (manager *UserQueryManager) FindUser(id int) (models.User, error) {
 	user := models.User{}
 	err := manager.Db.Find(&user, id)
 	if err != nil {
@@ -33,7 +33,11 @@ func (manager *UserQueryManager) findUser(id int) (models.User, error) {
 	return user, err
 }
 
-func (manager *UserQueryManager) newUser(user models.User) (models.User, error) {
+func (manager *UserQueryManager) NewUser(newUser models.NewUser) (models.User, error) {
+	user := models.User{
+		Name:     newUser.Name,
+		Password: newUser.Password,
+	}
 	err := manager.Db.Save(&user)
 	if err != nil {
 		log.Panic(err)
@@ -42,7 +46,7 @@ func (manager *UserQueryManager) newUser(user models.User) (models.User, error) 
 	return user, err
 }
 
-func (manager *UserQueryManager) updateUser(user models.User) (models.User, error) {
+func (manager *UserQueryManager) UpdateUser(user models.User) (models.User, error) {
 	err := manager.Db.Update(&user)
 	if err != nil {
 		log.Panic(err)
