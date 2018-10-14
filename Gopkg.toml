@@ -24,11 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-
-[[constraint]]
-  name = "github.com/graphql-go/graphql"
-  version = "0.7.5"
-
 [[constraint]]
   name = "github.com/gobuffalo/pop"
   version = "4.5.0"
@@ -36,10 +31,6 @@
 [[constraint]]
   name = "github.com/gobuffalo/validate"
   version = "2.0.0"
-
-[[constraint]]
-  name = "github.com/sogko/graphql-go-handler"
-  version = "0.2.1"
 
 [prune]
   go-tests = true
