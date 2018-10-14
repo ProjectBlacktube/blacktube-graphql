@@ -32,6 +32,10 @@
   name = "github.com/gobuffalo/validate"
   version = "2.0.0"
 
+[[constraint]]
+  name = "github.com/99designs/gqlgen"
+  version = "0.6.0"
+
 [prune]
   go-tests = true
   unused-packages = true
