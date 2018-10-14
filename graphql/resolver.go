@@ -27,7 +27,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input models.NewUser)
 	return r.UserManager.NewUser(input)
 }
 func (r *mutationResolver) CreateVideo(ctx context.Context, input models.NewVideo) (models.VideoNested, error) {
-	panic("not implemented")
+	return r.VideoManager.NewVideo(input)
 }
 
 type queryResolver struct{ *Resolver }
