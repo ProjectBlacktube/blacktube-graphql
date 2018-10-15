@@ -26,6 +26,14 @@ type mutationResolver struct{ *Resolver }
 func (r *mutationResolver) CreateUser(ctx context.Context, input models.NewUser) (models.User, error) {
 	return r.UserManager.NewUser(input)
 }
+func (r *mutationResolver) UpdateUser(ctx context.Context, id int, mutation models.UserMutation) (models.User, error) {
+	u := models.User{
+		ID:       id,
+		Name:     *mutation.Name,
+		Password: *mutation.Password,
+	}
+	return r.UserManager.UpdateUser(u)
+}
 func (r *mutationResolver) CreateVideo(ctx context.Context, input models.NewVideo) (models.VideoNested, error) {
 	return r.VideoManager.NewVideo(input)
 }

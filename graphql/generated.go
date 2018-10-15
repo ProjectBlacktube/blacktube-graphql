@@ -41,6 +41,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreateUser  func(childComplexity int, input models.NewUser) int
+		UpdateUser  func(childComplexity int, id int, mutation models.UserMutation) int
 		CreateVideo func(childComplexity int, input models.NewVideo) int
 	}
 
@@ -67,6 +68,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input models.NewUser) (models.User, error)
+	UpdateUser(ctx context.Context, id int, mutation models.UserMutation) (models.User, error)
 	CreateVideo(ctx context.Context, input models.NewVideo) (models.VideoNested, error)
 }
 type QueryResolver interface {
@@ -85,6 +87,30 @@ func field_Mutation_createUser_args(rawArgs map[string]interface{}) (map[string]
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_updateUser_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalInt(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 models.UserMutation
+	if tmp, ok := rawArgs["mutation"]; ok {
+		var err error
+		arg1, err = UnmarshalUserMutation(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["mutation"] = arg1
 	return args, nil
 
 }
@@ -173,6 +199,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(models.NewUser)), true
+
+	case "Mutation.updateUser":
+		if e.complexity.Mutation.UpdateUser == nil {
+			break
+		}
+
+		args, err := field_Mutation_updateUser_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(int), args["mutation"].(models.UserMutation)), true
 
 	case "Mutation.createVideo":
 		if e.complexity.Mutation.CreateVideo == nil {
@@ -332,6 +370,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "updateUser":
+			out.Values[i] = ec._Mutation_updateUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "createVideo":
 			out.Values[i] = ec._Mutation_createVideo(ctx, field)
 			if out.Values[i] == graphql.Null {
@@ -365,6 +408,36 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(models.NewUser))
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(models.User)
+	rctx.Result = res
+
+	return ec._User(ctx, field.Selections, &res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_updateUser_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateUser(rctx, args["id"].(int), args["mutation"].(models.UserMutation))
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -2300,6 +2373,40 @@ func UnmarshalNewVideo(v interface{}) (models.NewVideo, error) {
 	return it, nil
 }
 
+func UnmarshalUserMutation(v interface{}) (models.UserMutation, error) {
+	var it models.UserMutation
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "name":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.Name = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "password":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.Password = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) FieldMiddleware(ctx context.Context, obj interface{}, next graphql.Resolver) (ret interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -2330,6 +2437,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 	password: String!
 }
 
+
 type Video {
 	id: Int!
 	duration: Int!
@@ -2340,25 +2448,33 @@ type Video {
 }
 
 type Query {
-  users: [User!]!
-  videos: [Video!]!
+	users: [User!]!
+	videos: [Video!]!
 }
 
 input NewUser {
-  name: String!
-  password: String!
+	name: String!
+	password: String!
+}
+
+input UserMutation {
+	name: String
+	password: String
 }
 
 input NewVideo {
-  title: String!
-  description: String!
-  duration: Int!
-  ownerId: String!
+	title: String!
+	description: String!
+	duration: Int!
+	ownerId: String!
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
-  createVideo(input: NewVideo!): Video!
+	createUser(input: NewUser!): User!
+	updateUser(id: Int!, mutation: UserMutation!): User!
+	createVideo(input: NewVideo!): Video!
 }
+
+scalar Map
 `},
 )

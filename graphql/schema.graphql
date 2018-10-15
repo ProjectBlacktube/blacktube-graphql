@@ -4,6 +4,7 @@ type User {
 	password: String!
 }
 
+
 type Video {
 	id: Int!
 	duration: Int!
@@ -14,23 +15,31 @@ type Video {
 }
 
 type Query {
-  users: [User!]!
-  videos: [Video!]!
+	users: [User!]!
+	videos: [Video!]!
 }
 
 input NewUser {
-  name: String!
-  password: String!
+	name: String!
+	password: String!
+}
+
+input UserMutation {
+	name: String
+	password: String
 }
 
 input NewVideo {
-  title: String!
-  description: String!
-  duration: Int!
-  ownerId: String!
+	title: String!
+	description: String!
+	duration: Int!
+	ownerId: String!
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
-  createVideo(input: NewVideo!): Video!
+	createUser(input: NewUser!): User!
+	updateUser(id: Int!, mutation: UserMutation!): User!
+	createVideo(input: NewVideo!): Video!
 }
+
+scalar Map
