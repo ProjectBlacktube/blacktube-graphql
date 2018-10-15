@@ -1,11 +1,11 @@
 type User {
-	id: ID!
+	id: Int!
 	name: String!
 	password: String!
 }
 
 type Video {
-	id: ID!
+	id: Int!
 	duration: Int!
 	key: String!
 	title: String!

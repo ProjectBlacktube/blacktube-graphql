@@ -686,9 +686,9 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	rctx.Result = res
-	return graphql.MarshalID(res)
+	return graphql.MarshalInt(res)
 }
 
 // nolint: vetshadow
@@ -810,9 +810,9 @@ func (ec *executionContext) _Video_id(ctx context.Context, field graphql.Collect
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	rctx.Result = res
-	return graphql.MarshalID(res)
+	return graphql.MarshalInt(res)
 }
 
 // nolint: vetshadow
@@ -2325,13 +2325,13 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 
 var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "graphql/schema.graphql", Input: `type User {
-	id: ID!
+	id: Int!
 	name: String!
 	password: String!
 }
 
 type Video {
-	id: ID!
+	id: Int!
 	duration: Int!
 	key: String!
 	title: String!
