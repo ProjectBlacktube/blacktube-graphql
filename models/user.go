@@ -1,3 +1,5 @@
+//go:generate soda migrate up
+
 package models
 
 import (
