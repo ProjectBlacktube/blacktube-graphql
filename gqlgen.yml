@@ -21,6 +21,10 @@ models:
       id:
         resolver: true
         fieldName: ID
+  UserMutation:
+    model: map[string]interface{}
+  VideoMutation:
+    model: map[string]interface{}
 resolver:
   filename: graphql/resolver.go
   type: Resolver

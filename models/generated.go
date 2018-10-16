@@ -13,8 +13,3 @@ type NewVideo struct {
 	Duration    int    `json:"duration"`
 	OwnerID     string `json:"ownerId"`
 }
-
-type UserMutation struct {
-	Name     *string `json:"name"`
-	Password *string `json:"password"`
-}

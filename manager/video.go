@@ -81,7 +81,7 @@ func (manager *VideoQueryManager) DeleteVideo(id int) (models.VideoNested, error
 		log.Panic(err)
 	}
 
-	video, err := manager.fromNested(videoGql)
+	video, err := manager.FromNested(videoGql)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -109,7 +109,7 @@ func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNest
 	}, err
 }
 
-func (manager *VideoQueryManager) fromNested(video models.VideoNested) (models.Video, error) {
+func (manager *VideoQueryManager) FromNested(video models.VideoNested) (models.Video, error) {
 	return models.Video{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,

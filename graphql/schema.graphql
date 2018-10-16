@@ -35,12 +35,18 @@ input NewVideo {
 	ownerId: String!
 }
 
+input VideoMutation {
+	title: String
+	description: String
+	duration: Int
+	ownerId: String
+}
+
 type Mutation {
 	createUser(input: NewUser!): User!
 	deleteUser(id: Int!): User!
 	updateUser(id: Int!, mutation: UserMutation!): User!
 	createVideo(input: NewVideo!): Video!
 	deleteVideo(id: Int!): Video!
+	updateVideo(id: Int!, mutation: VideoMutation!): Video!
 }
-
-scalar Map
