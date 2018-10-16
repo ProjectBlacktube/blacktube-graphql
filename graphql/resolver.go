@@ -34,8 +34,14 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id int, mutation mode
 	}
 	return r.UserManager.UpdateUser(u)
 }
+func (r *mutationResolver) DeleteUser(ctx context.Context, id int) (models.User, error) {
+	return r.UserManager.DeleteUser(id)
+}
 func (r *mutationResolver) CreateVideo(ctx context.Context, input models.NewVideo) (models.VideoNested, error) {
 	return r.VideoManager.NewVideo(input)
+}
+func (r *mutationResolver) DeleteVideo(ctx context.Context, id int) (models.VideoNested, error) {
+	return r.VideoManager.DeleteVideo(id)
 }
 
 type queryResolver struct{ *Resolver }

@@ -75,6 +75,25 @@ func (manager *VideoQueryManager) UpdateVideo(video models.Video) (models.VideoN
 	return manager.toNested(video)
 }
 
+func (manager *VideoQueryManager) DeleteVideo(id int) (models.VideoNested, error) {
+	videoGql, err := manager.FindVideo(id)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	video, err := manager.fromNested(videoGql)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = manager.Db.Destroy(&video)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return videoGql, err
+}
+
 func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNested, error) {
 	owner, err := manager.UserManager.FindUser(video.Owner)
 

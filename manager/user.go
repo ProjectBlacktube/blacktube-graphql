@@ -54,3 +54,17 @@ func (manager *UserQueryManager) UpdateUser(user models.User) (models.User, erro
 
 	return user, err
 }
+
+func (manager *UserQueryManager) DeleteUser(id int) (models.User, error) {
+	user, err := manager.FindUser(id)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = manager.Db.Destroy(&user)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return user, err
+}
