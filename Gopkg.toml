@@ -1,6 +1,6 @@
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -24,15 +24,22 @@
 #   go-tests = true
 #   unused-packages = true
 
-required = ["github.com/99designs/gqlgen"]
+
+[[constraint]]
+  name = "github.com/99designs/gqlgen"
+  version = "0.7.2"
 
 [[constraint]]
   name = "github.com/gobuffalo/pop"
-  version = "4.5.0"
+  version = "4.11.2"
 
 [[constraint]]
   name = "github.com/gobuffalo/validate"
-  version = "2.0.0"
+  version = "2.0.3"
+
+[[constraint]]
+  name = "github.com/vektah/gqlparser"
+  version = "1.1.2"
 
 [prune]
   go-tests = true

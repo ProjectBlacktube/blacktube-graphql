@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  postgre:
+    image: postgres:latest
+    environment:
+    - POSTGRES_DB=btgql
+    ports:
+    - "5432:5432"
+
+  webapp:
+    build: .
+    environment:
+    - APP_ENV=development
+    - DB_HOST=postgre
+    - DB_PORT=5432
+    - DB_NAME=btgql
+    - DB_USER=postgres
+    - DB_PASSWORD=postgres
+    links:
+    - postgre
+    depends_on:
+    - postgre
+    ports:
+    - "8080:8080"
