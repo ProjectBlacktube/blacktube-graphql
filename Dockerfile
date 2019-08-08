@@ -12,9 +12,6 @@ RUN dep ensure
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o /go/bin/bt ./server
 
-# Build soda
-RUN go get github.com/gobuffalo/pop/...
-
 
 FROM alpine:latest
 
@@ -23,7 +20,6 @@ WORKDIR /root
 RUN apk --no-cache add ca-certificates
 
 COPY --from=builder /go/bin/bt .
-COPY --from=builder /go/bin/soda .
 COPY config ./config
 
 EXPOSE 8080

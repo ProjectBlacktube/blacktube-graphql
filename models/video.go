@@ -10,18 +10,18 @@ import (
 )
 
 type Video struct {
-	ID          int       `json:"id" db:"id"`
+	ID          string    `json:"id" db:"id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Duration    int       `json:"duration" db:"duration"`
 	Key         string    `json:"key" db:"key"`
 	Title       string    `json:"title" db:"title"`
 	Description string    `json:"description" db:"description"`
-	Owner       int       `json:"owner" db:"owner"`
+	Owner       string    `json:"owner" db:"owner"`
 }
 
 type VideoNested struct {
-	ID          int       `json:"id" db:"id"`
+	ID          string    `json:"id" db:"id"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
 	Duration    int       `json:"duration" db:"duration"`
@@ -51,7 +51,7 @@ func (v Videos) String() string {
 func (v *Video) Validate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.Validate(
 		&validators.IntIsPresent{Field: v.Duration, Name: "Duration"},
-		&validators.IntIsPresent{Field: v.Owner, Name: "Owner"},
+		&validators.StringIsPresent{Field: v.Owner, Name: "Owner"},
 		&validators.StringIsPresent{Field: v.Key, Name: "Key"},
 		&validators.StringIsPresent{Field: v.Title, Name: "Title"},
 		&validators.StringIsPresent{Field: v.Description, Name: "Description"},

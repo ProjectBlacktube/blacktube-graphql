@@ -23,7 +23,7 @@ func (manager *UserQueryManager) AllUsers() (models.Users, error) {
 	return users, err
 }
 
-func (manager *UserQueryManager) FindUser(id int) (models.User, error) {
+func (manager *UserQueryManager) FindUser(id string) (models.User, error) {
 	user := models.User{}
 	err := manager.Db.Find(&user, id)
 	if err != nil {
@@ -48,6 +48,20 @@ func (manager *UserQueryManager) NewUser(newUser models.NewUser) (models.User, e
 
 func (manager *UserQueryManager) UpdateUser(user models.User) (models.User, error) {
 	err := manager.Db.Update(&user)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return user, err
+}
+
+func (manager *UserQueryManager) DeleteUser(id string) (models.User, error) {
+	user, err := manager.FindUser(id)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = manager.Db.Destroy(&user)
 	if err != nil {
 		log.Panic(err)
 	}

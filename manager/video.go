@@ -4,7 +4,6 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/gobuffalo/pop"
 	"github.com/koneko096/blacktube-graphql/models"
@@ -32,7 +31,7 @@ func (manager *VideoQueryManager) AllVideos() (VideosNested, error) {
 	return videosNested, err
 }
 
-func (manager *VideoQueryManager) FindVideo(id int) (models.VideoNested, error) {
+func (manager *VideoQueryManager) FindVideo(id string) (models.VideoNested, error) {
 	video := models.Video{}
 	err := manager.Db.Find(&video, id)
 	if err != nil {
@@ -43,12 +42,7 @@ func (manager *VideoQueryManager) FindVideo(id int) (models.VideoNested, error) 
 }
 
 func (manager *VideoQueryManager) NewVideo(newVideo models.NewVideo) (models.VideoNested, error) {
-	oi, err := strconv.Atoi(newVideo.OwnerID)
-	if err != nil {
-		log.Panic(err)
-		return models.VideoNested{}, err
-	}
-
+	oi := newVideo.OwnerID
 	video := models.Video{
 		Title:       newVideo.Title,
 		Description: newVideo.Description,
@@ -57,7 +51,7 @@ func (manager *VideoQueryManager) NewVideo(newVideo models.NewVideo) (models.Vid
 		Owner:       oi,
 	}
 
-	err = manager.Db.Save(&video)
+	err := manager.Db.Save(&video)
 	if err != nil {
 		log.Panic(err)
 		return models.VideoNested{}, err
@@ -75,6 +69,25 @@ func (manager *VideoQueryManager) UpdateVideo(video models.Video) (models.VideoN
 	return manager.toNested(video)
 }
 
+func (manager *VideoQueryManager) DeleteVideo(id string) (models.VideoNested, error) {
+	videoGql, err := manager.FindVideo(id)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	video, err := manager.FromNested(videoGql)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = manager.Db.Destroy(&video)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return videoGql, err
+}
+
 func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNested, error) {
 	owner, err := manager.UserManager.FindUser(video.Owner)
 
@@ -90,7 +103,7 @@ func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNest
 	}, err
 }
 
-func (manager *VideoQueryManager) fromNested(video models.VideoNested) (models.Video, error) {
+func (manager *VideoQueryManager) FromNested(video models.VideoNested) (models.Video, error) {
 	return models.Video{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,

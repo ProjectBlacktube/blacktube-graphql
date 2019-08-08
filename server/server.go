@@ -10,11 +10,11 @@ import (
 
 	"github.com/99designs/gqlgen/handler"
 	"github.com/gobuffalo/pop"
-	gql "github.com/koneko096/blacktube-graphql/graphql"
+	"github.com/koneko096/blacktube-graphql/graphql"
 	"github.com/koneko096/blacktube-graphql/manager"
 )
 
-func New() gql.Config {
+func New() graphql.Config {
 	env := os.Getenv("APP_ENV")
 	if len(env) == 0 {
 		env = "development"
@@ -33,8 +33,8 @@ func New() gql.Config {
 		UserManager: userManager,
 	}
 
-	return gql.Config{
-		Resolvers: &gql.Resolver{
+	return graphql.Config{
+		Resolvers: &graphql.Resolver{
 			UserManager:  userManager,
 			VideoManager: videoManager,
 		},
@@ -44,7 +44,7 @@ func New() gql.Config {
 func main() {
 	http.Handle("/", handler.Playground("Blacktube", "/query"))
 	http.Handle("/query", handler.GraphQL(
-		gql.NewExecutableSchema(New()),
+		graphql.NewExecutableSchema(New()),
 		handler.RecoverFunc(func(ctx context.Context, err interface{}) error {
 			// send this panic somewhere
 			log.Print(err)
