@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/ProjectBlacktube/blacktube-graphql/models"
 	"github.com/gobuffalo/pop"
-	"github.com/koneko096/blacktube-graphql/models"
 )
 
 type VideoQueryManager struct {
 	Db          *pop.Connection
 	UserManager *UserQueryManager
 }
-type VideosNested []models.VideoNested
+type VideosNested []*models.VideoNested
 
 func (manager *VideoQueryManager) AllVideos() (VideosNested, error) {
 	videos := models.Videos{}
@@ -31,9 +31,9 @@ func (manager *VideoQueryManager) AllVideos() (VideosNested, error) {
 	return videosNested, err
 }
 
-func (manager *VideoQueryManager) FindVideo(id string) (models.VideoNested, error) {
-	video := models.Video{}
-	err := manager.Db.Find(&video, id)
+func (manager *VideoQueryManager) FindVideo(id string) (*models.VideoNested, error) {
+	video := &models.Video{}
+	err := manager.Db.Find(video, id)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -41,9 +41,9 @@ func (manager *VideoQueryManager) FindVideo(id string) (models.VideoNested, erro
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) NewVideo(newVideo models.NewVideo) (models.VideoNested, error) {
+func (manager *VideoQueryManager) NewVideo(newVideo *models.NewVideo) (*models.VideoNested, error) {
 	oi := newVideo.OwnerID
-	video := models.Video{
+	video := &models.Video{
 		Title:       newVideo.Title,
 		Description: newVideo.Description,
 		Duration:    newVideo.Duration,
@@ -51,16 +51,16 @@ func (manager *VideoQueryManager) NewVideo(newVideo models.NewVideo) (models.Vid
 		Owner:       oi,
 	}
 
-	err := manager.Db.Save(&video)
+	err := manager.Db.Save(video)
 	if err != nil {
 		log.Panic(err)
-		return models.VideoNested{}, err
+		return &models.VideoNested{}, err
 	}
 
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) UpdateVideo(video models.Video) (models.VideoNested, error) {
+func (manager *VideoQueryManager) UpdateVideo(video *models.Video) (*models.VideoNested, error) {
 	err := manager.Db.Update(&video)
 	if err != nil {
 		log.Panic(err)
@@ -69,7 +69,7 @@ func (manager *VideoQueryManager) UpdateVideo(video models.Video) (models.VideoN
 	return manager.toNested(video)
 }
 
-func (manager *VideoQueryManager) DeleteVideo(id string) (models.VideoNested, error) {
+func (manager *VideoQueryManager) DeleteVideo(id string) (*models.VideoNested, error) {
 	videoGql, err := manager.FindVideo(id)
 	if err != nil {
 		log.Panic(err)
@@ -88,10 +88,10 @@ func (manager *VideoQueryManager) DeleteVideo(id string) (models.VideoNested, er
 	return videoGql, err
 }
 
-func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNested, error) {
+func (manager *VideoQueryManager) toNested(video *models.Video) (*models.VideoNested, error) {
 	owner, err := manager.UserManager.FindUser(video.Owner)
 
-	return models.VideoNested{
+	return &models.VideoNested{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,
 		UpdatedAt:   video.UpdatedAt,
@@ -103,8 +103,8 @@ func (manager *VideoQueryManager) toNested(video models.Video) (models.VideoNest
 	}, err
 }
 
-func (manager *VideoQueryManager) FromNested(video models.VideoNested) (models.Video, error) {
-	return models.Video{
+func (manager *VideoQueryManager) FromNested(video *models.VideoNested) (*models.Video, error) {
+	return &models.Video{
 		ID:          video.ID,
 		CreatedAt:   video.CreatedAt,
 		UpdatedAt:   video.UpdatedAt,

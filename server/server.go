@@ -1,17 +1,15 @@
 package main
 
 import (
-	"context"
-	"errors"
+	"github.com/99designs/gqlgen/graphql/playground"
 	"log"
 	"net/http"
 	"os"
-	"runtime/debug"
 
-	"github.com/99designs/gqlgen/handler"
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/ProjectBlacktube/blacktube-graphql/graphql"
+	"github.com/ProjectBlacktube/blacktube-graphql/manager"
 	"github.com/gobuffalo/pop"
-	"github.com/koneko096/blacktube-graphql/graphql"
-	"github.com/koneko096/blacktube-graphql/manager"
 )
 
 func New() graphql.Config {
@@ -42,15 +40,13 @@ func New() graphql.Config {
 }
 
 func main() {
-	http.Handle("/", handler.Playground("Blacktube", "/query"))
-	http.Handle("/query", handler.GraphQL(
-		graphql.NewExecutableSchema(New()),
-		handler.RecoverFunc(func(ctx context.Context, err interface{}) error {
-			// send this panic somewhere
-			log.Print(err)
-			debug.PrintStack()
-			return errors.New("user message on panic")
-		}),
-	))
+	http.Handle("/", playground.Handler("Blacktube", "/version"))
+	http.Handle("/graphql", handler.NewDefaultServer(graphql.NewExecutableSchema(New())))
+	//handler.RecoverFunc(func(ctx context.Context, err interface{}) error {
+	//	// send this panic somewhere
+	//	log.Print(err)
+	//	debug.PrintStack()
+	//	return errors.New("user message on panic")
+	//}),
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

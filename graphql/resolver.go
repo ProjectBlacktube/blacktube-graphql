@@ -2,13 +2,13 @@
 package graphql
 
 import (
-	context "context"
+	"context"
 	"log"
 	"reflect"
 
 	"github.com/99designs/gqlgen/graphql"
-	"github.com/koneko096/blacktube-graphql/manager"
-	models "github.com/koneko096/blacktube-graphql/models"
+	"github.com/ProjectBlacktube/blacktube-graphql/manager"
+	"github.com/ProjectBlacktube/blacktube-graphql/models"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -26,10 +26,10 @@ func (r *Resolver) Query() QueryResolver {
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input models.NewUser) (models.User, error) {
-	return r.UserManager.NewUser(input)
+func (r *mutationResolver) CreateUser(ctx context.Context, input models.NewUser) (*models.User, error) {
+	return r.UserManager.NewUser(&input)
 }
-func (r *mutationResolver) UpdateUser(ctx context.Context, id string, mutation map[string]interface{}) (models.User, error) {
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, mutation map[string]interface{}) (*models.User, error) {
 	u, err := r.UserManager.FindUser(id)
 	if err != nil {
 		log.Panic(err)
@@ -37,22 +37,22 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, id string, mutation m
 
 	err = applyMap(mutation, &u)
 	if err != nil {
-		return models.User{}, err
+		return &models.User{}, err
 	}
 
 	return r.UserManager.UpdateUser(u)
 }
-func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (models.User, error) {
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*models.User, error) {
 	return r.UserManager.DeleteUser(id)
 }
 
-func (r *mutationResolver) CreateVideo(ctx context.Context, input models.NewVideo) (models.VideoNested, error) {
-	return r.VideoManager.NewVideo(input)
+func (r *mutationResolver) CreateVideo(ctx context.Context, input models.NewVideo) (*models.VideoNested, error) {
+	return r.VideoManager.NewVideo(&input)
 }
-func (r *mutationResolver) DeleteVideo(ctx context.Context, id string) (models.VideoNested, error) {
+func (r *mutationResolver) DeleteVideo(ctx context.Context, id string) (*models.VideoNested, error) {
 	return r.VideoManager.DeleteVideo(id)
 }
-func (r *mutationResolver) UpdateVideo(ctx context.Context, id string, mutation map[string]interface{}) (models.VideoNested, error) {
+func (r *mutationResolver) UpdateVideo(ctx context.Context, id string, mutation map[string]interface{}) (*models.VideoNested, error) {
 	vn, err := r.VideoManager.FindVideo(id)
 	if err != nil {
 		log.Panic(err)
@@ -60,12 +60,12 @@ func (r *mutationResolver) UpdateVideo(ctx context.Context, id string, mutation 
 
 	v, err := r.VideoManager.FromNested(vn)
 	if err != nil {
-		return models.VideoNested{}, err
+		return &models.VideoNested{}, err
 	}
 
 	err = applyMap(mutation, &v)
 	if err != nil {
-		return models.VideoNested{}, err
+		return &models.VideoNested{}, err
 	}
 
 	return r.VideoManager.UpdateVideo(v)
@@ -73,10 +73,10 @@ func (r *mutationResolver) UpdateVideo(ctx context.Context, id string, mutation 
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Users(ctx context.Context) ([]models.User, error) {
+func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 	return r.UserManager.AllUsers()
 }
-func (r *queryResolver) Videos(ctx context.Context) ([]models.VideoNested, error) {
+func (r *queryResolver) Videos(ctx context.Context) ([]*models.VideoNested, error) {
 	return r.VideoManager.AllVideos()
 }
 

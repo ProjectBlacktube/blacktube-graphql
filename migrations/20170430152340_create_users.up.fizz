@@ -1,4 +1,4 @@
-create_table("users", func(t) {
+create_table("users") {
   t.Column("name", "string", {"size": 24})
   t.Column("password", "string", {"size": 64})
-})
+}

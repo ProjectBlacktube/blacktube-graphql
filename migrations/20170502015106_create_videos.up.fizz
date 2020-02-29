@@ -1,7 +1,7 @@
-create_table("videos", func(t) {
+create_table("videos") {
   t.Column("duration", "integer", {})
   t.Column("key", "string", {"size": 40})
   t.Column("title", "string", {"size": 32})
   t.Column("description", "text", {})
   t.Column("owner", "integer", {})
-})
+}

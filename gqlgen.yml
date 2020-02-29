@@ -6,25 +6,23 @@
 schema: graphql/schema.graphql
 exec:
   filename: graphql/generated.go
+
 model:
   filename: models/generated.go
+
 models:
   User:
-    model: github.com/koneko096/blacktube-graphql/models.User
-    fields:
-      id:
-        resolver: true
-        fieldName: ID
+    model: github.com/ProjectBlacktube/blacktube-graphql/models.User
+
   Video:
-    model: github.com/koneko096/blacktube-graphql/models.VideoNested
-    fields:
-      id:
-        resolver: true
-        fieldName: ID
+    model: github.com/ProjectBlacktube/blacktube-graphql/models.VideoNested
+
   UserMutation:
     model: map[string]interface{}
+
   VideoMutation:
     model: map[string]interface{}
+
 resolver:
   filename: graphql/resolver.go
   type: Resolver

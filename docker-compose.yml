@@ -5,6 +5,7 @@ services:
     image: postgres:9.5-alpine
     environment:
     - POSTGRES_DB=btgql
+    - POSTGRES_PASSWORD=postgres
     - PGDATA=/tmp
     ports:
     - "5432:5432"

@@ -3,10 +3,6 @@ package models
 import (
 	"encoding/json"
 	"time"
-
-	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/validate"
-	"github.com/gobuffalo/validate/validators"
 )
 
 type User struct {
@@ -24,31 +20,10 @@ func (u User) String() string {
 }
 
 // Users is not required by pop and may be deleted
-type Users []User
+type Users []*User
 
 // String is not required by pop and may be deleted
 func (u Users) String() string {
 	ju, _ := json.Marshal(u)
 	return string(ju)
-}
-
-// Validate gets run everytime you call a "pop.Validate" method.
-// This method is not required and may be deleted.
-func (u *User) Validate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.Validate(
-		&validators.StringIsPresent{Field: u.Name, Name: "Name"},
-		&validators.StringIsPresent{Field: u.Password, Name: "Password"},
-	), nil
-}
-
-// ValidateSave gets run everytime you call "pop.ValidateSave" method.
-// This method is not required and may be deleted.
-func (u *User) ValidateSave(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
-}
-
-// ValidateUpdate gets run everytime you call "pop.ValidateUpdate" method.
-// This method is not required and may be deleted.
-func (u *User) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
-	return validate.NewErrors(), nil
 }

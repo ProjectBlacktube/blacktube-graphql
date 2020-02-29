@@ -1,14 +1,11 @@
-FROM golang:1.12-alpine as builder
+FROM golang:1.13-alpine as builder
 
-WORKDIR /go/src/github/koneko096/blacktube-graphql
+WORKDIR /go/src/github/ProjectBlacktube/blacktube-graphql
 
 RUN apk --no-cache add git
 
-# Get latest dep
-RUN go get -u github.com/golang/dep/cmd/dep
-
-ADD . /go/src/github/koneko096/blacktube-graphql
-RUN dep ensure
+ADD . /go/src/github/ProjectBlacktube/blacktube-graphql
+RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o /go/bin/bt ./server
 
