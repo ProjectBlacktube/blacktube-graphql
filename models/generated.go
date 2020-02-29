@@ -8,8 +8,9 @@ type NewUser struct {
 }
 
 type NewVideo struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Duration    int    `json:"duration"`
-	OwnerID     string `json:"ownerId"`
+	Title        string `json:"title"`
+	Description  string `json:"description"`
+	Duration     int    `json:"duration"`
+	PreviewImage string `json:"preview_image"`
+	OwnerID      string `json:"owner_id"`
 }

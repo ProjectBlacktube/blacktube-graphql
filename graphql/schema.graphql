@@ -1,21 +1,26 @@
 type User {
 	id: ID!
 	name: String!
+	avatar: String!
 	password: String!
 }
 
 type Video {
 	id: ID!
 	duration: Int!
+	created_at: Int!
 	key: String!
+	view_count: Int!
 	title: String!
 	description: String!
+	preview_image: String!
 	owner: User!
 }
 
 type Query {
 	users: [User!]!
 	videos: [Video!]!
+	videoByKey(key: String!): Video!
 }
 
 input NewUser {
@@ -25,6 +30,7 @@ input NewUser {
 
 input UserMutation {
 	name: String
+	avatar: String
 	password: String
 }
 
@@ -32,14 +38,16 @@ input NewVideo {
 	title: String!
 	description: String!
 	duration: Int!
-	ownerId: String!
+	preview_image: String!
+	owner_id: String!
 }
 
 input VideoMutation {
 	title: String
 	description: String
 	duration: Int
-	ownerId: String
+	preview_image: String
+	owner_id: String
 }
 
 type Mutation {

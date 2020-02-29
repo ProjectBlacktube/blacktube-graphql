@@ -23,6 +23,9 @@ func (r *Resolver) Mutation() MutationResolver {
 func (r *Resolver) Query() QueryResolver {
 	return &queryResolver{r}
 }
+func (r *Resolver) Video() VideoResolver {
+	return &videoResolver{r}
+}
 
 type mutationResolver struct{ *Resolver }
 
@@ -78,6 +81,15 @@ func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
 }
 func (r *queryResolver) Videos(ctx context.Context) ([]*models.VideoNested, error) {
 	return r.VideoManager.AllVideos()
+}
+func (r *queryResolver) VideoByKey(ctx context.Context, key string) (*models.VideoNested, error) {
+	return r.VideoManager.FindVideoByKey(key)
+}
+
+type videoResolver struct{ *Resolver }
+
+func (r *videoResolver) CreatedAt(ctx context.Context, video *models.VideoNested) (int64, error) {
+	return video.CreatedAt.Unix(), nil
 }
 
 func applyMap(changes map[string]interface{}, to interface{}) error {

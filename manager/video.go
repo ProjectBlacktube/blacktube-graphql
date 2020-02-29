@@ -41,6 +41,16 @@ func (manager *VideoQueryManager) FindVideo(id string) (*models.VideoNested, err
 	return manager.toNested(video)
 }
 
+func (manager *VideoQueryManager) FindVideoByKey(key string) (*models.VideoNested, error) {
+	video := &models.Video{}
+	err := manager.Db.Where("key = ?", key).First(video)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return manager.toNested(video)
+}
+
 func (manager *VideoQueryManager) NewVideo(newVideo *models.NewVideo) (*models.VideoNested, error) {
 	oi := newVideo.OwnerID
 	video := &models.Video{

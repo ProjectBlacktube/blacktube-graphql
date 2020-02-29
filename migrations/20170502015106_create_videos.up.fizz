@@ -1,7 +1,10 @@
 create_table("videos") {
+  t.Column("id", "uuid", { primary: true })
   t.Column("duration", "integer", {})
   t.Column("key", "string", {"size": 40})
+  t.Column("view_count", "integer", {})
   t.Column("title", "string", {"size": 32})
   t.Column("description", "text", {})
+  t.Column("preview_image", "string", {"size": 80})
   t.Column("owner", "integer", {})
 }
