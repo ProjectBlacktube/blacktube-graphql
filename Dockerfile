@@ -1,4 +1,6 @@
-FROM golang:1.13-alpine as builder
+ARG GO_VERSION=1.15.6
+
+FROM golang:${GO_VERSION}-alpine AS builder
 
 WORKDIR /go/src/github/ProjectBlacktube/blacktube-graphql
 
@@ -10,14 +12,12 @@ RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux go build -a -o /go/bin/bt ./server
 
 
-FROM alpine:latest
+FROM gcr.io/distroless/static AS final
 
-WORKDIR /root
+USER nonroot
 
-RUN apk --no-cache add ca-certificates
-
-COPY --from=builder /go/bin/bt .
-COPY config ./config
+COPY --from=builder --chown=nonroot:nonroot /go/bin/bt /app
+COPY config /config
 
 EXPOSE 8080
-CMD ["./bt"]
+ENTRYPOINT ["/app"]
