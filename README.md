@@ -1,6 +1,6 @@
 # Blacktube GraphQL Backend
 
-![Build](https://github.com/ProjectBlacktube/blacktube-graphql/actions/workflows/BuildImage/badge.svg)
+![Build](https://github.com/ProjectBlacktube/blacktube-graphql/actions/workflows/BuildImage.yml/badge.svg)
 
 ## Requirements
 
